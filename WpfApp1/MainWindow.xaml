@@ -1,0 +1,722 @@
+﻿<Window x:Class="WpfApp1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Электронный дневник" Height="700" Width="1300" MinHeight="600" MinWidth="960"
+        WindowStartupLocation="CenterScreen" Background="#F5F5F5" FontFamily="Segoe UI" FontSize="13">
+    <Window.Resources>
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#212121"/>
+        </Style>
+
+        <Style x:Key="SectionSub" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="#757575"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="10,3,0,0"/>
+        </Style>
+
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="#424242"/>
+            <Setter Property="Margin" Value="0,0,0,3"/>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="Padding" Value="5,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="#BDBDBD"/>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="Padding" Value="4,2"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="#BDBDBD"/>
+        </Style>
+
+        <Style TargetType="DatePicker">
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="#BDBDBD"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DatePicker">
+                        <Border Background="White" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="22"/>
+                                </Grid.ColumnDefinitions>
+
+                                <DatePickerTextBox x:Name="PART_TextBox" Grid.Column="0"
+                                                   VerticalContentAlignment="Center" Padding="4,0"
+                                                   BorderThickness="0" Background="Transparent"/>
+
+                                <Button x:Name="PART_Button" Grid.Column="1" Focusable="False"
+                                        Width="22" Height="22" MinWidth="0" MinHeight="0" Margin="0"
+                                        Padding="0" BorderThickness="0" Background="Transparent" Cursor="Hand">
+                                    <Path Data="M0.5,2.5 L9.5,2.5 L9.5,9.5 L0.5,9.5 Z M0.5,5 L9.5,5 M3,0.8 L3,3.2 M7,0.8 L7,3.2"
+                                          Stroke="#616161" StrokeThickness="1" Fill="Transparent"
+                                          HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Button>
+
+                                <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Bottom"
+                                       PlacementTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                                       StaysOpen="False">
+                                    <Border Background="White" BorderBrush="#BDBDBD" BorderThickness="1">
+                                        <Calendar x:Name="PART_Calendar" Margin="2"/>
+                                    </Border>
+                                </Popup>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="PART_TextBox" Property="Foreground" Value="#9E9E9E"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="DatePickerTextBox">
+            <Setter Property="Height" Value="Auto"/>
+            <Setter Property="Padding" Value="2,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <Style TargetType="PasswordBox">
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="Padding" Value="5,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="#BDBDBD"/>
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="MinWidth" Value="84"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="Margin" Value="0,0,6,0"/>
+        </Style>
+
+        <Style x:Key="NavBtn" TargetType="Button">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Margin" Value="8,1"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}">
+                            <ContentPresenter Margin="{TemplateBinding Padding}" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#EEEEEE"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#E0E0E0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="Panel" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#DDDDDD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12"/>
+        </Style>
+
+        <Style TargetType="DataGrid">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#DDDDDD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="RowHeight" Value="28"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#EEEEEE"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="SelectionUnit" Value="FullRow"/>
+        </Style>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#F0F0F0"/>
+            <Setter Property="Foreground" Value="#212121"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="7,5"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Setter Property="BorderBrush" Value="#DDDDDD"/>
+        </Style>
+
+        <Style TargetType="DataGridCell">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="7,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="GradeCell" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#1B5E20"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="MutedCell" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#757575"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="EllipsisCell" TargetType="TextBlock">
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
+        </Style>
+
+        <Style x:Key="MutedEllipsisCell" TargetType="TextBlock" BasedOn="{StaticResource EllipsisCell}">
+            <Setter Property="Foreground" Value="#757575"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="52"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Шапка -->
+        <Border Grid.Row="0" Background="White" BorderBrush="#DDDDDD" BorderThickness="0,0,0,1">
+            <Grid Margin="16,0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Электронный дневник" FontSize="17" FontWeight="SemiBold" Foreground="#212121"/>
+                    <TextBlock Text="колледж" FontSize="12" Foreground="#757575" VerticalAlignment="Center" Margin="10,2,0,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <StackPanel VerticalAlignment="Center" Margin="0,0,14,0">
+                        <TextBlock x:Name="LblHeaderFio" FontSize="12" FontWeight="SemiBold" Foreground="#212121" HorizontalAlignment="Right"/>
+                        <TextBlock x:Name="LblHeaderRole" FontSize="11" Foreground="#757575" HorizontalAlignment="Right"/>
+                    </StackPanel>
+                    <Button Content="Выйти" Click="BtnLogout_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="190"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Меню -->
+            <Border Grid.Column="0" Background="#FAFAFA" BorderBrush="#DDDDDD" BorderThickness="0,0,1,0">
+                <StackPanel Margin="0,8,0,0">
+                    <TextBlock Text="МЕНЮ" FontSize="10" Foreground="#9E9E9E" Margin="16,0,0,4"/>
+                    <Button x:Name="BtnNavGrades" Content="Оценки" Style="{StaticResource NavBtn}" Tag="Grades" Click="Nav_Click"/>
+                    <Button x:Name="BtnNavStatement" Content="Ведомость" Style="{StaticResource NavBtn}" Tag="Statement" Click="Nav_Click"/>
+                    <Button x:Name="BtnNavUsers" Content="Пользователи" Style="{StaticResource NavBtn}" Tag="Users" Click="Nav_Click"/>
+                    <Button x:Name="BtnNavCatalogs" Content="Справочники" Style="{StaticResource NavBtn}" Tag="Catalogs" Click="Nav_Click"/>
+                    <Button x:Name="BtnNavProfile" Content="Профиль" Style="{StaticResource NavBtn}" Tag="Profile" Click="Nav_Click"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Содержимое -->
+            <Grid Grid.Column="1" Margin="16">
+
+                <!-- ================= ОЦЕНКИ ================= -->
+                <Grid x:Name="PanelGrades" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock x:Name="LblGradesTitle" Text="Оценки" Style="{StaticResource SectionTitle}"/>
+                        <TextBlock x:Name="LblGradesSub" Text="текущие оценки студентов" Style="{StaticResource SectionSub}"/>
+                    </StackPanel>
+
+                    <Border x:Name="GradeFilterCard" Grid.Row="1" Style="{StaticResource Panel}" Margin="0,0,0,10">
+                        <WrapPanel VerticalAlignment="Center">
+                            <TextBlock Text="Группа:" Style="{StaticResource FieldLabel}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <ComboBox x:Name="CbGGroup" Width="150" Margin="0,0,14,0" DisplayMemberPath="Name"
+                                      SelectionChanged="GradeFilter_Changed"/>
+                            <TextBlock Text="Дисциплина:" Style="{StaticResource FieldLabel}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <ComboBox x:Name="CbGDisc" Width="210" Margin="0,0,14,0" DisplayMemberPath="Name"
+                                      SelectionChanged="GradeFilter_Changed"/>
+                            <TextBlock Text="Поиск:" Style="{StaticResource FieldLabel}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBox x:Name="TbGSearch" Width="140" Margin="0,0,14,0" TextChanged="TbGSearch_TextChanged"/>
+                            <Button Content="Обновить" Click="BtnGRefresh_Click"/>
+                        </WrapPanel>
+                    </Border>
+
+                    <Border x:Name="GradeEditor" Grid.Row="2" Style="{StaticResource Panel}" Margin="0,0,0,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.6*"/>
+                                <ColumnDefinition Width="2.4*"/>
+                                <ColumnDefinition Width="90"/>
+                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="1.6*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Студент" Style="{StaticResource FieldLabel}" Margin="0,0,8,3"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Дисциплина" Style="{StaticResource FieldLabel}" Margin="0,0,8,3"/>
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Оценка" Style="{StaticResource FieldLabel}" Margin="0,0,8,3"/>
+                            <TextBlock Grid.Row="0" Grid.Column="3" Text="Дата" Style="{StaticResource FieldLabel}" Margin="0,0,8,3"/>
+                            <TextBlock Grid.Row="0" Grid.Column="4" Text="Тема занятия" Style="{StaticResource FieldLabel}"/>
+
+                            <ComboBox Grid.Row="1" Grid.Column="0" x:Name="CbGStudent" Margin="0,0,8,0" DisplayMemberPath="Fio"/>
+                            <ComboBox Grid.Row="1" Grid.Column="1" x:Name="CbGPlan" Margin="0,0,8,0" DisplayMemberPath="Display"/>
+                            <ComboBox Grid.Row="1" Grid.Column="2" x:Name="CbGValue" IsEditable="True" Margin="0,0,8,0"/>
+                            <DatePicker Grid.Row="1" Grid.Column="3" x:Name="DpGDate" Margin="0,0,8,0"/>
+                            <TextBox Grid.Row="1" Grid.Column="4" x:Name="TbGTema"/>
+
+                            <StackPanel Grid.Row="2" Grid.ColumnSpan="5" Orientation="Horizontal" Margin="0,10,0,0">
+                                <Button Content="Добавить" Click="BtnGAdd_Click"/>
+                                <Button Content="Сохранить" Click="BtnGSave_Click"/>
+                                <Button Content="Удалить" Click="BtnGDelete_Click"/>
+                                <Button Content="Очистить" Click="BtnGClear_Click"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <DataGrid Grid.Row="3" x:Name="GridGrades" SelectionChanged="GridGrades_SelectionChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn x:Name="ColGradeStudent" Header="Студент" Binding="{Binding StudentFio}" Width="170" ElementStyle="{StaticResource EllipsisCell}"/>
+                            <DataGridTextColumn x:Name="ColGradeGroup" Header="Группа" Binding="{Binding GroupName}" Width="75"/>
+                            <DataGridTextColumn Header="Дисциплина" Binding="{Binding DisciplineName}" Width="2*" ElementStyle="{StaticResource EllipsisCell}"/>
+                            <DataGridTextColumn Header="Сем." Binding="{Binding Semestr}" Width="45"/>
+                            <DataGridTextColumn Header="Вид контроля" Binding="{Binding ControlTypeName}" Width="170" ElementStyle="{StaticResource EllipsisCell}"/>
+                            <DataGridTextColumn Header="Оценка" Binding="{Binding Ocenka}" Width="60" ElementStyle="{StaticResource GradeCell}"/>
+                            <DataGridTextColumn Header="Дата" Binding="{Binding Data, StringFormat=dd.MM.yyyy}" Width="80"/>
+                            <DataGridTextColumn Header="Тема занятия" Binding="{Binding Tema}" Width="1.4*" ElementStyle="{StaticResource MutedEllipsisCell}"/>
+                            <DataGridTextColumn x:Name="ColGradeKind" Header="Вид" Binding="{Binding KindName}" Width="85" ElementStyle="{StaticResource MutedCell}" Visibility="Collapsed"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+
+                <!-- ================= ВЕДОМОСТЬ ================= -->
+                <Grid x:Name="PanelStatement" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="Ведомость" Style="{StaticResource SectionTitle}"/>
+                        <TextBlock Text="итоговые оценки студентов" Style="{StaticResource SectionSub}"/>
+                    </StackPanel>
+
+                    <Border Grid.Row="1" Style="{StaticResource Panel}" Margin="0,0,0,10">
+                        <WrapPanel VerticalAlignment="Center">
+                            <TextBlock Text="Группа:" Style="{StaticResource FieldLabel}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <ComboBox x:Name="CbSGroup" Width="160" Margin="0,0,14,0" DisplayMemberPath="Name"
+                                      SelectionChanged="StatementFilter_Changed"/>
+                            <TextBlock Text="Дисциплина:" Style="{StaticResource FieldLabel}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <ComboBox x:Name="CbSDisc" Width="240" Margin="0,0,14,0" DisplayMemberPath="Name"
+                                      SelectionChanged="StatementFilter_Changed"/>
+                            <Button Content="Обновить" Click="BtnSRefresh_Click"/>
+                        </WrapPanel>
+                    </Border>
+
+                    <Border Grid.Row="2" Style="{StaticResource Panel}" Margin="0,0,0,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.8*"/>
+                                <ColumnDefinition Width="2.6*"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="140"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Студент" Style="{StaticResource FieldLabel}" Margin="0,0,8,3"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Дисциплина" Style="{StaticResource FieldLabel}" Margin="0,0,8,3"/>
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Оценка" Style="{StaticResource FieldLabel}" Margin="0,0,8,3"/>
+                            <TextBlock Grid.Row="0" Grid.Column="3" Text="Дата сдачи" Style="{StaticResource FieldLabel}"/>
+
+                            <ComboBox Grid.Row="1" Grid.Column="0" x:Name="CbFStudent" Margin="0,0,8,0" DisplayMemberPath="Fio"/>
+                            <ComboBox Grid.Row="1" Grid.Column="1" x:Name="CbFPlan" Margin="0,0,8,0" DisplayMemberPath="Display"/>
+                            <ComboBox Grid.Row="1" Grid.Column="2" x:Name="CbFValue" IsEditable="True" Margin="0,0,8,0"/>
+                            <DatePicker Grid.Row="1" Grid.Column="3" x:Name="DpFDate"/>
+
+                            <StackPanel Grid.Row="2" Grid.ColumnSpan="4" Orientation="Horizontal" Margin="0,10,0,0">
+                                <Button Content="Добавить" Click="BtnFAdd_Click"/>
+                                <Button Content="Сохранить" Click="BtnFSave_Click"/>
+                                <Button Content="Удалить" Click="BtnFDelete_Click"/>
+                                <Button Content="Очистить" Click="BtnFClear_Click"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <DataGrid Grid.Row="3" x:Name="GridFinal" SelectionChanged="GridFinal_SelectionChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Студент" Binding="{Binding StudentFio}" Width="170" ElementStyle="{StaticResource EllipsisCell}"/>
+                            <DataGridTextColumn Header="Группа" Binding="{Binding GroupName}" Width="75"/>
+                            <DataGridTextColumn Header="Дисциплина" Binding="{Binding DisciplineName}" Width="2*" ElementStyle="{StaticResource EllipsisCell}"/>
+                            <DataGridTextColumn Header="Сем." Binding="{Binding Semestr}" Width="45"/>
+                            <DataGridTextColumn Header="Вид контроля" Binding="{Binding ControlTypeName}" Width="190" ElementStyle="{StaticResource EllipsisCell}"/>
+                            <DataGridTextColumn Header="Оценка" Binding="{Binding Ocenka}" Width="70" ElementStyle="{StaticResource GradeCell}"/>
+                            <DataGridTextColumn Header="Дата сдачи" Binding="{Binding Data, StringFormat=dd.MM.yyyy}" Width="90"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+
+                <!-- ================= ПОЛЬЗОВАТЕЛИ ================= -->
+                <Grid x:Name="PanelUsers" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="Пользователи" Style="{StaticResource SectionTitle}"/>
+                        <TextBlock Text="учётные записи студентов и преподавателей" Style="{StaticResource SectionSub}"/>
+                    </StackPanel>
+
+                    <Border Grid.Row="1" Style="{StaticResource Panel}" Margin="0,0,0,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Фамилия" Style="{StaticResource FieldLabel}" Margin="0,0,8,3"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Имя" Style="{StaticResource FieldLabel}" Margin="0,0,8,3"/>
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Отчество" Style="{StaticResource FieldLabel}" Margin="0,0,8,3"/>
+                            <TextBlock Grid.Row="0" Grid.Column="3" Text="Логин" Style="{StaticResource FieldLabel}"/>
+
+                            <TextBox Grid.Row="1" Grid.Column="0" x:Name="TbUFam" Margin="0,0,8,10"/>
+                            <TextBox Grid.Row="1" Grid.Column="1" x:Name="TbUName" Margin="0,0,8,10"/>
+                            <TextBox Grid.Row="1" Grid.Column="2" x:Name="TbUPatr" Margin="0,0,8,10"/>
+                            <TextBox Grid.Row="1" Grid.Column="3" x:Name="TbULogin" Margin="0,0,0,10"/>
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Пароль (пусто = 12345)" Style="{StaticResource FieldLabel}" Margin="0,0,8,3"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="Роль" Style="{StaticResource FieldLabel}" Margin="0,0,8,3"/>
+                            <TextBlock Grid.Row="2" Grid.Column="2" Text="Группа" Style="{StaticResource FieldLabel}" Margin="0,0,8,3"/>
+                            <TextBlock Grid.Row="2" Grid.Column="3" Text="Зачётная книжка" Style="{StaticResource FieldLabel}"/>
+
+                            <TextBox Grid.Row="3" Grid.Column="0" x:Name="TbUPass" Margin="0,0,8,0"/>
+                            <ComboBox Grid.Row="3" Grid.Column="1" x:Name="CbURole" Margin="0,0,8,0" DisplayMemberPath="Name"
+                                      SelectionChanged="UserRole_Changed"/>
+                            <ComboBox Grid.Row="3" Grid.Column="2" x:Name="CbUGroup" Margin="0,0,8,0" DisplayMemberPath="Name"/>
+                            <TextBox Grid.Row="3" Grid.Column="3" x:Name="TbUZachetka"/>
+
+                            <StackPanel Grid.Row="4" Grid.ColumnSpan="4" Orientation="Horizontal" Margin="0,12,0,0">
+                                <Button Content="Новый" Click="BtnUNew_Click"/>
+                                <Button Content="Сохранить" Click="BtnUSave_Click"/>
+                                <Button Content="Удалить" Click="BtnUDelete_Click"/>
+                            </StackPanel>
+
+                            <TextBlock Grid.Row="5" Grid.ColumnSpan="4" x:Name="LblUserInfo" FontSize="12" Margin="0,8,0,0"/>
+                        </Grid>
+                    </Border>
+
+                    <DataGrid Grid.Row="2" x:Name="GridUsers" SelectionChanged="GridUsers_SelectionChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ФИО" Binding="{Binding Fio}" Width="*" ElementStyle="{StaticResource EllipsisCell}"/>
+                            <DataGridTextColumn Header="Логин" Binding="{Binding Login}" Width="140"/>
+                            <DataGridTextColumn Header="Пароль" Binding="{Binding Parol}" Width="110" ElementStyle="{StaticResource MutedCell}"/>
+                            <DataGridTextColumn Header="Роль" Binding="{Binding RoleName}" Width="130"/>
+                            <DataGridTextColumn Header="Группа" Binding="{Binding GroupName}" Width="100"/>
+                            <DataGridTextColumn Header="Зачётка" Binding="{Binding NomerZachetki}" Width="110" ElementStyle="{StaticResource MutedCell}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+
+                <!-- ================= СПРАВОЧНИКИ ================= -->
+                <Grid x:Name="PanelCatalogs" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="Справочники" Style="{StaticResource SectionTitle}"/>
+                        <TextBlock Text="группы, специальности, дисциплины, виды контроля и учебный план" Style="{StaticResource SectionSub}"/>
+                    </StackPanel>
+
+                    <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0">
+
+                        <!-- Группы -->
+                        <TabItem Header="Группы">
+                            <Grid Margin="0,10,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <Border Style="{StaticResource Panel}" Margin="0,0,0,10">
+                                    <WrapPanel VerticalAlignment="Center">
+                                        <TextBlock Text="Название:" Style="{StaticResource FieldLabel}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                        <TextBox x:Name="TbCatGroupName" Width="130" Margin="0,0,12,0"/>
+                                        <TextBlock Text="Специальность:" Style="{StaticResource FieldLabel}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                        <ComboBox x:Name="CbCatGroupSpec" Width="250" Margin="0,0,12,0" DisplayMemberPath="Name"/>
+                                        <Button Content="Добавить" Click="BtnCatGroupAdd_Click"/>
+                                        <Button Content="Сохранить" Click="BtnCatGroupSave_Click"/>
+                                        <Button Content="Удалить" Click="BtnCatGroupDelete_Click"/>
+                                    </WrapPanel>
+                                </Border>
+
+                                <DataGrid Grid.Row="1" x:Name="GridCatGroups" SelectionChanged="GridCatGroups_SelectionChanged">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Группа" Binding="{Binding Name}" Width="200" ElementStyle="{StaticResource EllipsisCell}"/>
+                                        <DataGridTextColumn Header="Специальность" Binding="{Binding SpecialtyName}" Width="*" ElementStyle="{StaticResource EllipsisCell}"/>
+                                        <DataGridTextColumn Header="Студентов" Binding="{Binding StudentCount}" Width="110"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </TabItem>
+
+                        <!-- Специальности -->
+                        <TabItem Header="Специальности">
+                            <Grid Margin="0,10,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <Border Style="{StaticResource Panel}" Margin="0,0,0,10">
+                                    <WrapPanel VerticalAlignment="Center">
+                                        <TextBlock Text="Код:" Style="{StaticResource FieldLabel}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                        <TextBox x:Name="TbCatSpecKod" Width="120" Margin="0,0,14,0"/>
+                                        <TextBlock Text="Название:" Style="{StaticResource FieldLabel}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                        <TextBox x:Name="TbCatSpecName" Width="360" Margin="0,0,14,0"/>
+                                        <Button Content="Добавить" Click="BtnCatSpecAdd_Click"/>
+                                        <Button Content="Сохранить" Click="BtnCatSpecSave_Click"/>
+                                        <Button Content="Удалить" Click="BtnCatSpecDelete_Click"/>
+                                    </WrapPanel>
+                                </Border>
+
+                                <DataGrid Grid.Row="1" x:Name="GridCatSpecs" SelectionChanged="GridCatSpecs_SelectionChanged">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Код" Binding="{Binding Kod}" Width="150"/>
+                                        <DataGridTextColumn Header="Название" Binding="{Binding Name}" Width="*" ElementStyle="{StaticResource EllipsisCell}"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </TabItem>
+
+                        <!-- Дисциплины -->
+                        <TabItem Header="Дисциплины">
+                            <Grid Margin="0,10,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <Border Style="{StaticResource Panel}" Margin="0,0,0,10">
+                                    <WrapPanel VerticalAlignment="Center">
+                                        <TextBlock Text="Название:" Style="{StaticResource FieldLabel}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                        <TextBox x:Name="TbCatDiscName" Width="420" Margin="0,0,14,0"/>
+                                        <Button Content="Добавить" Click="BtnCatDiscAdd_Click"/>
+                                        <Button Content="Сохранить" Click="BtnCatDiscSave_Click"/>
+                                        <Button Content="Удалить" Click="BtnCatDiscDelete_Click"/>
+                                    </WrapPanel>
+                                </Border>
+
+                                <DataGrid Grid.Row="1" x:Name="GridCatDiscs" SelectionChanged="GridCatDiscs_SelectionChanged">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Дисциплина" Binding="{Binding Name}" Width="*" ElementStyle="{StaticResource EllipsisCell}"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </TabItem>
+
+                        <!-- Виды контроля -->
+                        <TabItem Header="Виды контроля">
+                            <Grid Margin="0,10,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <Border Style="{StaticResource Panel}" Margin="0,0,0,10">
+                                    <WrapPanel VerticalAlignment="Center">
+                                        <TextBlock Text="Название:" Style="{StaticResource FieldLabel}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                        <TextBox x:Name="TbCatControlName" Width="300" Margin="0,0,14,0"/>
+                                        <TextBlock Text="Тип (1/2):" Style="{StaticResource FieldLabel}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                        <TextBox x:Name="TbCatControlTip" Width="60" Margin="0,0,14,0"/>
+                                        <Button Content="Добавить" Click="BtnCatControlAdd_Click"/>
+                                        <Button Content="Сохранить" Click="BtnCatControlSave_Click"/>
+                                        <Button Content="Удалить" Click="BtnCatControlDelete_Click"/>
+                                    </WrapPanel>
+                                </Border>
+
+                                <DataGrid Grid.Row="1" x:Name="GridCatControls" SelectionChanged="GridCatControls_SelectionChanged">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Вид контроля" Binding="{Binding Name}" Width="*" ElementStyle="{StaticResource EllipsisCell}"/>
+                                        <DataGridTextColumn Header="Тип" Binding="{Binding Tip}" Width="100"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </TabItem>
+
+                        <!-- Учебный план -->
+                        <TabItem Header="Учебный план">
+                            <Grid Margin="0,10,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <Border Style="{StaticResource Panel}" Margin="0,0,0,10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Специальность" Style="{StaticResource FieldLabel}" Margin="0,0,10,3"/>
+                                        <TextBlock Grid.Row="0" Grid.Column="1" Text="Дисциплина" Style="{StaticResource FieldLabel}" Margin="0,0,10,3"/>
+                                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Преподаватель" Style="{StaticResource FieldLabel}"/>
+
+                                        <ComboBox Grid.Row="1" Grid.Column="0" x:Name="CbPSpec" Margin="0,0,10,10" DisplayMemberPath="Name"/>
+                                        <ComboBox Grid.Row="1" Grid.Column="1" x:Name="CbPDisc" Margin="0,0,10,10" DisplayMemberPath="Name"/>
+                                        <ComboBox Grid.Row="1" Grid.Column="2" x:Name="CbPTeacher" Margin="0,0,0,10" DisplayMemberPath="Fio"/>
+
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Семестр" Style="{StaticResource FieldLabel}" Margin="0,0,10,3"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="1" Text="Количество часов" Style="{StaticResource FieldLabel}" Margin="0,0,10,3"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="2" Text="Вид контроля" Style="{StaticResource FieldLabel}"/>
+
+                                        <TextBox Grid.Row="3" Grid.Column="0" x:Name="TbPSemestr" Margin="0,0,10,0"/>
+                                        <TextBox Grid.Row="3" Grid.Column="1" x:Name="TbPHours" Margin="0,0,10,0"/>
+                                        <ComboBox Grid.Row="3" Grid.Column="2" x:Name="CbPControl" DisplayMemberPath="Name"/>
+
+                                        <StackPanel Grid.Row="4" Grid.ColumnSpan="3" Orientation="Horizontal" Margin="0,12,0,0">
+                                            <Button Content="Новый" Click="BtnPNew_Click"/>
+                                            <Button Content="Сохранить" Click="BtnPSave_Click"/>
+                                            <Button Content="Удалить" Click="BtnPDelete_Click"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <DataGrid Grid.Row="1" x:Name="GridPlans" SelectionChanged="GridPlans_SelectionChanged">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Специальность" Binding="{Binding SpecialtyName}" Width="1.2*" ElementStyle="{StaticResource EllipsisCell}"/>
+                                        <DataGridTextColumn Header="Дисциплина" Binding="{Binding DisciplineName}" Width="1.5*" ElementStyle="{StaticResource EllipsisCell}"/>
+                                        <DataGridTextColumn Header="Преподаватель" Binding="{Binding TeacherFio}" Width="180" ElementStyle="{StaticResource EllipsisCell}"/>
+                                        <DataGridTextColumn Header="Семестр" Binding="{Binding Semestr}" Width="70"/>
+                                        <DataGridTextColumn Header="Часы" Binding="{Binding Hours}" Width="60"/>
+                                        <DataGridTextColumn Header="Вид контроля" Binding="{Binding ControlTypeName}" Width="180" ElementStyle="{StaticResource EllipsisCell}"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+
+                <!-- ================= ПРОФИЛЬ ================= -->
+                <ScrollViewer x:Name="PanelProfile" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Профиль" Style="{StaticResource SectionTitle}" Margin="0,0,0,10"/>
+
+                        <Border Style="{StaticResource Panel}" Padding="16" Margin="0,0,0,10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Width="72" Height="72" Background="#E0E0E0"
+                                        BorderBrush="#DDDDDD" BorderThickness="1" VerticalAlignment="Top">
+                                    <Grid ClipToBounds="True">
+                                        <TextBlock x:Name="LblAvatar" Text="?" Foreground="#424242" FontSize="22"
+                                                   FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <Image x:Name="ImgAvatar" Stretch="UniformToFill" Visibility="Collapsed"/>
+                                    </Grid>
+                                </Border>
+
+                                <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock x:Name="LblProfileFio" FontSize="18" FontWeight="SemiBold" Foreground="#212121"/>
+                                    <TextBlock x:Name="LblProfileRole" FontSize="12" Foreground="#757575" Margin="0,3,0,0"/>
+                                    <TextBlock x:Name="LblProfileLogin" FontSize="12" Foreground="#424242" Margin="0,2,0,0"/>
+                                    <TextBlock x:Name="LblProfileExtra" FontSize="12" Foreground="#424242" Margin="0,2,0,0"/>
+                                    <TextBlock x:Name="LblProfileAvg" FontSize="12" Foreground="#1B5E20" Margin="0,2,0,0"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right">
+                                    <Button Content="Выбрать фото" MinWidth="110" Click="BtnAvatar_Click"/>
+                                    <TextBlock x:Name="LblAvatarInfo" FontSize="12" Margin="0,4,0,0" TextAlignment="Right"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource Panel}" Padding="16">
+                            <StackPanel>
+                                <TextBlock Text="Смена пароля" FontSize="14" FontWeight="SemiBold" Foreground="#212121" Margin="0,0,0,10"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Текущий пароль" Style="{StaticResource FieldLabel}" Margin="0,0,10,3"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Новый пароль" Style="{StaticResource FieldLabel}" Margin="0,0,10,3"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Повтор нового пароля" Style="{StaticResource FieldLabel}"/>
+
+                                    <PasswordBox Grid.Row="1" Grid.Column="0" x:Name="PbOld" Margin="0,0,10,0"/>
+                                    <PasswordBox Grid.Row="1" Grid.Column="1" x:Name="PbNew" Margin="0,0,10,0"/>
+                                    <PasswordBox Grid.Row="1" Grid.Column="2" x:Name="PbNew2"/>
+                                </Grid>
+                                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                                    <Button Content="Сменить пароль" Click="BtnChangePass_Click"/>
+                                    <TextBlock x:Name="LblPassInfo" FontSize="12" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CollegeApi/CollegeApi.csproj" />
+  <Project Path="WpfApp1/WpfApp1.csproj" />
+</Solution>
